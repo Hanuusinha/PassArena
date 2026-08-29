@@ -1,10 +1,10 @@
-package com.PassArena.user_service;
+package com.passArena.service_discovery;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class UserServiceApplicationTests {
+class ServiceDiscoveryApplicationTests {
 
 	@Test
 	void contextLoads() {
