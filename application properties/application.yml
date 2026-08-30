@@ -1,0 +1,32 @@
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    config:
+      enabled: false
+
+
+jwt:
+  access-token-expiration: 9000000
+  refresh-token-expiration: 604800000
+  secret: mysecretmysecretmysecretmysecretmysecret
+  expiration: 9000000
