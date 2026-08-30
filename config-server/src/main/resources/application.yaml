@@ -1,7 +1,7 @@
 spring:
   application:
     name: config-server
-  profile:
+  profiles:
     active: native
   cloud:
     config:
@@ -12,7 +12,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8761/eureka/
 
   instance:
     prefer-ip-address: true
