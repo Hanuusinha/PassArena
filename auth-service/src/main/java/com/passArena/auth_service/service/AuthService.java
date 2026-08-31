@@ -13,5 +13,7 @@ public class AuthService {
     private final UserCredentialRepository userCredentialRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserServiceClient userServiceClient;
+    private final JwtService jwtService;
+
 
 }
