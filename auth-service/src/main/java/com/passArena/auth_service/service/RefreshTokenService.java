@@ -21,7 +21,7 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    @Value("${jwt.refresh-token.expiration}")
+    @Value("${jwt.refresh-token-expiration}")
     private Long refreshTokenExpiration;
 
     private final SecureRandom secureRandom = new SecureRandom();
