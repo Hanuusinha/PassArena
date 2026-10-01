@@ -28,5 +28,5 @@ management:
 jwt:
   access-token-expiration: 9000000
   refresh-token-expiration: 604800000
-  secret: mysecretmysecretmysecretmysecretmysecret
+  secret: ${JWT_SECRET}
   expiration: 9000000
