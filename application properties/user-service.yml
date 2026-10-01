@@ -6,9 +6,9 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/PassArenaDB
-    username: postgres
-    password: Password
+    url: ${USERDB_URL}
+    username: ${USERDB_USERNAME}
+    password: ${USERDB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     database: POSTGRESQL
@@ -30,5 +30,6 @@ resilience4j:
         retry-exceptions:
           - java.io.IOException
           - java.util.concurrent.TimeoutException
+
 
 
