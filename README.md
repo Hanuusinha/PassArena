@@ -93,11 +93,11 @@ Served by `movie-service` (port 9091). Not yet routed through the gateway.
    | `user-service` | `USERDB_URL`, `USERDB_USERNAME`, `USERDB_PASSWORD` |
    | `movie-service` | `MOVIEDB_URL`, `MOVIEDB_USERNAME`, `MOVIEDB_PASSWORD` |
 
-3. **JWT secret.** `jwt.secret` in `application properties/application.yml` should be `${JWT_SECRET}`. Generate a strong random value and set it as an environment variable in every service that uses it (`auth-service` today, `api-gateway` once it validates tokens). Never commit a real secret. If one was committed, rotate it, since it stays in git history.
+3. **JWT secret.** `jwt.secret` in `application properties/application.yml` should be `${JWT_SECRET}`. Generate a strong random value and set it as an environment variable in every service that uses it (`auth-service` today, `api-gateway` once it validates tokens).
    ```powershell
    [Convert]::ToBase64String((1..48 | ForEach-Object { Get-Random -Maximum 256 }))
    ```
-   IntelliJ Community has no Spring Boot run configuration type; use *Edit configuration templates → Application → Environment variables*, or a Windows user variable (restart IntelliJ afterwards). Don't tick *Share through VCS* on a run configuration holding secrets.
+   
 4. **Keep secrets out of git.** `.idea/workspace.xml` (where IntelliJ stores run-configuration env vars) is ignored by `.idea/.gitignore`. Never `git add -f` it.
 5. Create the tables with the scripts in `auth-service/src/main/resources/db/migration/`. `movie-service` uses Hibernate `ddl-auto: update`, so its table is created automatically.
 

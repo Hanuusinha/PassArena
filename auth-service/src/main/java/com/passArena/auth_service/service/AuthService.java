@@ -23,6 +23,7 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
 
+
     public AuthResponse signup(SignupRequest request)
     {
         userCredentialRepository.findByEmail(request.getEmail()).ifPresent(user -> {

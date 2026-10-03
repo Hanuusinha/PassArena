@@ -66,6 +66,14 @@ public class UserServiceImpl implements UserService {
         return mapToResponse(user);
     }
 
+    @Override
+    public void deleteUser(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
+        userRepository.delete(user);
+    }
+
     private UserResponse mapToResponse(User user)
     {
         return UserResponse.builder()

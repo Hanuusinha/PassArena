@@ -16,7 +16,7 @@ public class RouteConfig {
         return builder.routes()
                 .route("AUTH-ROUTE", route ->
                         route.path("/auth-service/**")
-                        .filters(f -> f.rewritePath("/auth-service/(?<segment>.*)",
+                        .filters(f -> f.rewritePath("/auth-service/(?<segment>.*)","/${segment}")
                                 .retry(config -> config
                                 .setRetries(3)
                                 .setMethods(HttpMethod.GET, HttpMethod.POST)
@@ -27,6 +27,13 @@ public class RouteConfig {
                                         true
                                 )))
                                 .uri("lb://auth-service"))
+                .route("user-route", route ->
+                        route.path("/user-service/**")
+                                .filters(f ->
+                                        f.circuitBreaker(config -> config.setName("userServiceCircuitBreaker")
+                                                .setFallbackUri("forward:/fallback/user-service"))
+                                                .rewritePath("/user-service/(?<segment>.*)", "/${segment}"))
+                                .uri("lb://user-service"))
                 .build();
     }
 }

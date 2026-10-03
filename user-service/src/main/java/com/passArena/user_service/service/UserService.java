@@ -12,4 +12,6 @@ public interface UserService {
     UserResponse getUserById(UUID userId);
 
     UserResponse getUserByEmail(String email);
+
+    void deleteUser(UUID userId);
 }
