@@ -2,7 +2,7 @@
 
 A Spring Boot **microservices** backend built around centralized configuration, service discovery, an API gateway, and JWT-based authentication.
 
-> **Status:** work in progress. `auth-service` is complete; `user-service` and `movie-service` are implemented but their API endpoints are not yet tested. The gateway only routes to `auth-service` so far.
+> **Status:** work in progress. `auth-service`, `user-service` and `movie-service` are implemented and their endpoints have been tested. The gateway routes to `auth-service` and `user-service` (with a circuit breaker on the latter); a movie route and active JWT enforcement are still pending.
 
 ## Architecture
 
@@ -27,7 +27,7 @@ A Spring Boot **microservices** backend built around centralized configuration, 
 |---|---|---|
 | `service-discovery` | 8761 | Eureka server; service registry |
 | `config-server` | 8888 | Spring Cloud Config (native profile) serving files from `application properties/` |
-| `api-gateway` | 8080 | Spring Cloud Gateway (WebFlux); routing, retry with backoff, Resilience4j circuit breaker |
+| `api-gateway` | 8080 | Spring Cloud Gateway (WebFlux); routing, retry with backoff, Resilience4j circuit breaker, fallback endpoints, JWT validation helpers (not yet active) |
 | `auth-service` | 8083 | Signup, login, JWT access tokens, refresh-token rotation, logout; MySQL |
 | `user-service` | 8084 | User profile management; PostgreSQL |
 | `movie-service` | 9091 | Movie catalog CRUD, search and status filtering; MySQL |
@@ -42,7 +42,7 @@ A Spring Boot **microservices** backend built around centralized configuration, 
 
 ## API
 
-Requests go through the gateway. `/auth-service/**` is rewritten and forwarded to `auth-service`.
+Requests go through the gateway. `/auth-service/**` and `/user-service/**` are rewritten (prefix stripped) and forwarded to the matching service. The `user-service` route is wrapped in a circuit breaker that falls back to `/fallback/user-service`.
 
 ### Auth (`/auth`)
 
@@ -61,6 +61,7 @@ Requests go through the gateway. `/auth-service/**` is rewritten and forwarded t
 | GET | `/users/me` | Current profile, identified by the `X-User-Id` header |
 | GET | `/users/{userId}` | Get user by UUID |
 | GET | `/users/email/{email}` | Get user by email |
+| DELETE | `/users/{userId}` | Delete a user (`204`) |
 
 ### Movies (`/movies`)
 
@@ -71,7 +72,7 @@ Served by `movie-service` (port 9091). Not yet routed through the gateway.
 | POST | `/movies` | Create a movie |
 | GET | `/movies/{movieId}` | Get movie by UUID |
 | GET | `/movies/status/{status}` | List movies by status (`UPCOMING`, `NOW_SHOWING`, `ENDED`) |
-| GET | `/movies/search` | Search movies |
+| GET | `/movies/search?title=` | Search movies by title |
 | PUT | `/movies/{movieId}` | Update a movie |
 | DELETE | `/movies/{movieId}` | Delete a movie |
 
@@ -99,7 +100,12 @@ Served by `movie-service` (port 9091). Not yet routed through the gateway.
    ```
    
 4. **Keep secrets out of git.** `.idea/workspace.xml` (where IntelliJ stores run-configuration env vars) is ignored by `.idea/.gitignore`. Never `git add -f` it.
-5. Create the tables with the scripts in `auth-service/src/main/resources/db/migration/`. `movie-service` uses Hibernate `ddl-auto: update`, so its table is created automatically.
+5. Create the tables with the SQL scripts in each service:
+   - `auth-service/src/main/resources/db/migration/` (MySQL)
+   - `user-service/src/main/resources/db/create_users_table.sql` (PostgreSQL)
+   - `movie-service/src/main/resources/db/create_movies_table.sql` (MySQL)
+
+   `user-service` and `movie-service` also run Hibernate with `ddl-auto: update`, so their scripts mainly document and pin the schema.
 
 ### Run order
 
@@ -141,9 +147,11 @@ PassArena/
 
 ## Roadmap
 
-- [ ] Test `user-service` and `movie-service` endpoints
-- [ ] JWT validation and `X-User-Id` propagation in the gateway
-- [ ] Gateway routes for `user-service` and `movie-service`
+- [x] Test `user-service` and `movie-service` endpoints
+- [x] SQL table scripts for `user-service` and `movie-service`
+- [x] Gateway route and circuit breaker for `user-service`
+- [ ] Activate JWT validation and `X-User-Id` propagation in the gateway (`JwtAuthenticationFilter` exists but isn't registered as a `WebFilter`/`GlobalFilter`; also remove the debug `System.out` secret logging in `JwtService`)
+- [ ] Gateway route for `movie-service` (fallback endpoint already exists)
 - [ ] Move `jwt.secret` to `${JWT_SECRET}` and rotate the committed value
 - [ ] Add a root `.gitignore`
 - [ ] Input validation on signup/login

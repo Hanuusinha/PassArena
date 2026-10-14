@@ -10,7 +10,7 @@
         <module name="config-server" />
         <module name="service-discovery" />
       </profile>
-      <profile name="Annotation profile for api-gateway" enabled="true">
+      <profile name="Annotation profile for theatre-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -18,6 +18,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
         </processorPath>
         <module name="api-gateway" />
+        <module name="theatre-service" />
         <module name="movie-service" />
         <module name="auth-service" />
         <module name="user-service" />
@@ -34,6 +35,7 @@
       <module name="config-server" options="-parameters" />
       <module name="movie-service" options="-parameters" />
       <module name="service-discovery" options="-parameters" />
+      <module name="theatre-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
       <module name="user_service" options="-parameters" />
     </option>
