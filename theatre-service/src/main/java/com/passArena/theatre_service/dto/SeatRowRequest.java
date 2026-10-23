@@ -1,5 +1,6 @@
 package com.passArena.theatre_service.dto;
 
+import com.passArena.theatre_service.entity.SeatType;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
